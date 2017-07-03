@@ -30,7 +30,6 @@ var pw_check;
 
 next1.addEventListener("click", function(){
 	id = document.getElementById('new_id').value;
-	console.log(id);
 	location.href = "index.html#signUp2";
 });
 
@@ -48,8 +47,10 @@ signup.addEventListener("click", function(){
 
 	if(result.toString() === "success"){
 		location.href = "index.html#success";
+		setInterval("display()", 2000); 
+	}else{
+		document.addjoin.id.focus();
 	}
-	setInterval("display()", 2000); 
 });
 
 function validate_pw(password, pw_check){
@@ -66,14 +67,28 @@ signin.addEventListener("click", function(){
 	var my_pw = document.getElementById("my_password").value;
 	
 	var result = post("http://117.17.158.192:8200/Servlet/servers", {"type":"sign in", "id": my_id.toString(), "pw": my_pw.toString()});
+	console.log("check result: "+result);
 	
-	if(result !== "failed"){
-		location.href = "index.html#successIn";
-		setInterval("displayQR()", 1300); 
-	}else if( response === "failed"){
-		location.href="index.html#failed";
-		setInterval("displaySignIn()", 1300); 
+	if(my_id === ""){
+		alert("Enter your id");
+		document.addjoin.my_id.focus();
 	}
+	if(my_pw === ""){
+		alert("Enter your password");
+		document.addjoin.my_pw.focus();
+	}
+	if(result.toString() === "failed"){
+		alert("Sign in failure...");
+		document.addjoin.my_id.focus();
+	}else{
+		location.href = "index.html#siginsuccess";
+		setInterval("displayQR()", 1300); 
+	}
+});
+
+var tomain = document.querySelector("#tomain");
+tomain.addEventListener("click", function(){
+	location.href="index.html#main";
 });
 
 
@@ -85,16 +100,12 @@ function displayQR(){
 	location.href = "index.html#QRarea";
 }
 
-function displaySignIn(){
-	location.href = "index.html#signIn";
-}
 
+
+//http POST
 var xhr = new XMLHttpRequest();
 var response;
-
-// http POST
 function post(url, data){
-	
 	xhr.open('POST', url, true);	//asynchronous
 	xhr.setRequestHeader("Content-Type", "application/text/plain");
 	
@@ -116,7 +127,21 @@ function post(url, data){
 			console.log(response);
 		}
 	}
-	return response;
+	if(response != undefined)
+		return response;
 }
 
-// 
+
+// Cookies
+
+function setCookie(){
+	
+}
+
+function getCookie(){
+	
+}
+
+function deleteCookie(){
+	
+}

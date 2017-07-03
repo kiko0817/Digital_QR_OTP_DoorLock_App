@@ -8,7 +8,8 @@
 	<link rel="stylesheet" media="all and (-tizen-geometric-shape: circle)" href="lib/tau/wearable/theme/default/tau.circle.min.css">
 	<!-- load theme file for your application -->
 	<link rel="stylesheet" href="css/style.css">
-
+	
+	
 </head>
 <body>
 	<div class="ui-page ui-page-active" id="main">
@@ -27,10 +28,9 @@
 			<h2 class="ui-title">Sign up</h2>
 		</header>
 		<div class="ui-content content-padding">
-			ID: <input type="text" name="new_id" id="new_id" required><br/>
-			<div class="ui-popup-footer" id="bottomBtn">
-      			<button id="next1" class="ui-btn">Next</button>
-  			</div>
+			<input type="text" name="new_id" id="new_id" placeholder="ID"><br/>
+      		<div id="next1" class="button">Next</div>
+      		
 		</div>
 	</div>
 
@@ -39,9 +39,9 @@
 			<h2 class="ui-title">Sign up</h2>
 		</header>
 		<div class="ui-content content-padding">
-			PW: <input type="password" name="new_password" id="new_password" required><br/>
-			PW check: <input type="password" name="pw_check" id="pw_check" required><br/>
-			<input type="button" class="signup" id="signup" value="Sign up">
+			<input type="password" name="new_password" id="new_password" placeholder="password"><br/>
+			<input type="password" name="pw_check" id="pw_check" placeholder="password check"><br/>
+			<div id="signup" class="button">Sign up</div>
 		</div>
 	</div>
 	
@@ -58,13 +58,16 @@
 			<h2 class="ui-title">Sign In</h2>
 		</header>
 		<div class="ui-content content-padding">
-			ID: <input type="text" name="my_id" id="my_id"><br/>
-			Password: <input type="password" name="my_password" id="my_password"><br/>
-			ID save? <input type="checkbox" id="idsave"><br/>
-			<input type="button" id="signin" value="Sign in">
+			<input type="text" name="my_id" id="my_id" placeholder="ID"><br/>
+			<input type="password" name="my_password" id="my_password" placeholder="Password"><br/>
+			<div id="cookie">Remember me <input type="checkbox" id="idsave"></div>
+			<div id="signin" class="button">Sign in</div>
+
 		</div>
 	</div>
-	
+
+
+
 	<div class="ui-page" id="siginsuccess">
 		<header class="ui-header">
 		</header>
@@ -73,13 +76,12 @@
 		</div>
 	</div>
 	
-	
 	<div class="ui-page" id="QRarea">
 		<header class="ui-header">
 			<h2 class="ui-title">QR Code</h2>
 		</header>
 		<div class="ui-content content-padding">
-			<input type="button" class="logout" id="logout" value="Logout">
+			<div class="button" id="tomain" >Go to main</div>
 		</div>
 	</div>
 	
