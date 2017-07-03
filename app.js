@@ -44,9 +44,9 @@ signup.addEventListener("click", function(){
 	console.log(id.toString());
 	console.log(password.toString());
 	
-	var response = post("http://117.17.158.192:8200/Servlet/servers", {"type":"sign up", "id": id.toString(), "pw": password.toString()});
+	var result = post("http://117.17.158.192:8200/Servlet/servers", {"type":"sign up", "id": id.toString(), "pw": password.toString()});
 
-	if(response == 200){
+	if(result.toString() === "success"){
 		location.href = "index.html#success";
 	}
 	setInterval("display()", 2000); 
@@ -59,23 +59,22 @@ function validate_pw(password, pw_check){
 	}
 }
 
-var a = document.createElement("a");
-a.setAttribute("href", "index.html#successIn");
 
 var signin = document.querySelector("#signin");
 signin.addEventListener("click", function(){
 	var my_id = document.getElementById("my_id").value;
 	var my_pw = document.getElementById("my_password").value;
 	
-	var response = post("http://117.17.158.192:8200/Servlet/servers", {"type":"sign in", "id": my_id.toString(), "pw": my_pw.toString()});
+	var result = post("http://117.17.158.192:8200/Servlet/servers", {"type":"sign in", "id": my_id.toString(), "pw": my_pw.toString()});
 	
-	if(response == 200){
+	if(result !== "failed"){
 		location.href = "index.html#successIn";
 		setInterval("displayQR()", 1300); 
+	}else if( response === "failed"){
+		location.href="index.html#failed";
+		setInterval("displaySignIn()", 1300); 
 	}
 });
-
-
 
 
 function display(){
@@ -86,10 +85,16 @@ function displayQR(){
 	location.href = "index.html#QRarea";
 }
 
+function displaySignIn(){
+	location.href = "index.html#signIn";
+}
+
+var xhr = new XMLHttpRequest();
+var response;
 
 // http POST
 function post(url, data){
-	var xhr = new XMLHttpRequest();
+	
 	xhr.open('POST', url, true);	//asynchronous
 	xhr.setRequestHeader("Content-Type", "application/text/plain");
 	
@@ -105,12 +110,13 @@ function post(url, data){
 	function processRequest(e){
 		console.log(xhr.status);
 		if(xhr.readyState == 4 && xhr.status == 200 ){
-			console.log("status ok");
-//			var response = JSON.parse(xhr.responseText);
-			var response = xhr.responseText;
-			console.log("check");
+//			var responseJSON = JSON.parse(xhr.responseText);
+			response = xhr.responseText;
+//			console.log(responseJSON);
 			console.log(response);
 		}
 	}
-	return 200;
+	return response;
 }
+
+// 
