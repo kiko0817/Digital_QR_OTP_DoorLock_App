@@ -43,8 +43,8 @@ signup.addEventListener("click", function(){
 	console.log(id.toString());
 	console.log(password.toString());
 	
-	var result = post("http://117.17.158.192:8200/Servlet/servers", {"type":"sign up", "id": id.toString(), "pw": password.toString()});
-
+	var result= post("http://117.17.158.192:8200/Servlet/servers", {"type":"sign up", "id": id.toString(), "pw": password.toString()});
+	
 	if(result.toString() === "success"){
 		location.href = "index.html#success";
 		setInterval("display()", 2000); 
@@ -68,7 +68,7 @@ signin.addEventListener("click", function(){
 	
 	var result = post("http://117.17.158.192:8200/Servlet/servers", {"type":"sign in", "id": my_id.toString(), "pw": my_pw.toString()});
 	console.log("check result: "+result);
-	
+		
 	if(my_id === ""){
 		alert("Enter your id");
 		document.addjoin.my_id.focus();
@@ -104,7 +104,7 @@ function displayQR(){
 
 //http POST
 var xhr = new XMLHttpRequest();
-var response;
+
 function post(url, data){
 	xhr.open('POST', url, true);	//asynchronous
 	xhr.setRequestHeader("Content-Type", "application/text/plain");
@@ -117,7 +117,6 @@ function post(url, data){
     }
 
 	xhr.onreadystatechange = processRequest;
-	
 	function processRequest(e){
 		console.log(xhr.status);
 		if(xhr.readyState == 4 && xhr.status == 200 ){
@@ -127,9 +126,9 @@ function post(url, data){
 			console.log(response);
 		}
 	}
-	if(response != undefined)
-		return response;
+	return response;
 }
+
 
 
 // Cookies
