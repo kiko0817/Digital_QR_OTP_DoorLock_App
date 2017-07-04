@@ -4,9 +4,20 @@
 
 body {
     margin: 0px auto;
+    background-color: #222;
     background-image: url('../image/planet.jpg');
-	background-size: 100%;
-	
+}
+
+@media screen and (-tizen-geometric-shape: circle) 
+{
+   #main
+   {
+      /* Implement the CSS style to be overridden in circular */
+       background-image: url('../image/planet.jpg');
+   }
+   #main-title{
+   		margin-top:-10px;
+   }
 }
 
 .contents {
@@ -32,6 +43,7 @@ body {
 	margin-bottom: 16px;
 	padding-left: 16px;
 	padding-right: 16px;
+	font-size:10em;
 }
 
 .content_text {
@@ -40,6 +52,9 @@ body {
 	color:#fff;
 }
 
+.main-content{
+	margin: 20px;
+}
 
 input{
 	width:280px;
