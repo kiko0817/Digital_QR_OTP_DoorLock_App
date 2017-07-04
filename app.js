@@ -46,13 +46,16 @@ signup.addEventListener("click", function(){
 	var result= post("http://117.17.158.192:8200/Servlet/servers", {"type":"sign up", "id": id.toString(), "pw": password.toString()});
 	
 	if(result.toString() === "success"){
-		location.href = "index.html#success";
-		setInterval("display()", 2000); 
+//		location.href = "index.html#success";
+		alert("Sign up success");
+		display()
 	}else{
 		document.addjoin.id.focus();
 	}
 });
 
+
+//password validation
 function validate_pw(password, pw_check){
 	if(password != pw_check){
 		alert("password is diffrent");
@@ -60,7 +63,7 @@ function validate_pw(password, pw_check){
 	}
 }
 
-
+// Sign in
 var signin = document.querySelector("#signin");
 signin.addEventListener("click", function(){
 	var my_id = document.getElementById("my_id").value;
@@ -81,16 +84,17 @@ signin.addEventListener("click", function(){
 		alert("Sign in failure...");
 		document.addjoin.my_id.focus();
 	}else{
-		location.href = "index.html#siginsuccess";
-		setInterval("displayQR()", 1300); 
+//		location.href = "index.html#siginsuccess";
+		alert("Sign in success");
+		displayQR();
 	}
 });
 
-var tomain = document.querySelector("#tomain");
-tomain.addEventListener("click", function(){
-	location.href="index.html#main";
+var back = document.getElementById("back");
+back.addEventListener("click", function(){
+	console.log("back");
+	window.history.back();
 });
-
 
 function display(){
 	location.href = "index.html#main";
