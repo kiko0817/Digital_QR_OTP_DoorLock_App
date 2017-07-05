@@ -3,16 +3,18 @@
 <head>
 	<meta name="viewport" content="width=device-width,user-scalable=no">
 	<title>QR CodeDoor Key</title>
-	<script type="text/javascript" src="jquery-3.2.1.js"></script>
-
+	
 	<link rel="stylesheet" href="lib/tau/wearable/theme/default/tau.min.css">
 	<link rel="stylesheet" media="all and (-tizen-geometric-shape: circle)" href="lib/tau/wearable/theme/default/tau.circle.min.css">
 	<!-- load theme file for your application -->
 	<link rel="stylesheet" href="css/style.css">
-	
-	
+
+
+     
 </head>
 <body>
+
+
 	<div class="ui-page ui-page-active" id="main">
 		<header class="ui-header" >
 			<h2 class="ui-title" id="main-title">QR Code <br/>Door key</h2>			
@@ -21,6 +23,7 @@
 			<ui class="ui-listview">
 				<li><a href="#signUp">Sign up</a></li>
 				<li><a href="#signIn">Sign in</a></li>
+				<li><a href="#QRarea">QR Code</a></li>
 
 		</div>
 	</div>
@@ -65,12 +68,13 @@
 		<div class="ui-content content-padding">
 			<input type="text" name="my_id" id="my_id" placeholder="ID"><br/>
 			<input type="password" name="my_password" id="my_password" placeholder="Password"><br/>
-			<div id="cookie">Remember me <input type="checkbox" id="idsave"></div>
+			<div id="idsave-text">ID save? 
+			<input type="checkbox" id="idsave-checkbox"></div>
 			<div id="signin" class="button">Sign in</div>
 			<div id="main" class="button"><a href="#main">Main</a></div>
 		</div>
 	</div>
-
+	
 	<div class="ui-page" id="siginsuccess">
 		<header class="ui-header">
 		</header>
@@ -84,14 +88,22 @@
 			<h2 class="ui-title">QR Code</h2>
 		</header>
 		<div class="ui-content content-padding">
-			<div class="button" id="tomain" >Main</div>
+			<div>
+		        <button id="createBtn">create</button>
+		        
+   			</div>
+   			
+		    <div><img id="qrcode" src='' /></div>
+			<div class="button"><a href="#main">Main</a></div>
+			<div id="sendtest" class="button"><a href="#">send ws test</a></div>
 		</div>
 	</div>
 	
-	
+	<script type="text/javascript" src="jquery-3.2.1.js"></script>	
 	<script type="text/javascript" src="lib/tau/wearable/js/tau.min.js"></script>
 	<script src="app.js"></script>
+	<!--<script src="separate.js"></script>-->
 	<script src="lowBatteryCheck.js"></script>
-
+     
 </body>
 </html>

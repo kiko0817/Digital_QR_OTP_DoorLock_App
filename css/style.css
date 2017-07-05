@@ -20,6 +20,10 @@ body {
    }
 }
 
+#qrcode{
+	margin-top: 10%;
+}
+
 .contents {
 	display: flex;
 	display: -webkit-flex;
@@ -67,7 +71,11 @@ input{
 	margin-bottom:-25px;
 }
 
-#idsave{
+#idsave-text{
+	font-size:25px;
+}
+
+#idsave-checkbox{
 	width:25px;
 	height:25px;
 	margin-top:5%;
