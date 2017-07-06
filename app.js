@@ -325,7 +325,6 @@ if(iddata === null){
 	my_id.setAttribute("value", iddata);
 }
 
-
 function deleteLocalStorage(){
 	localStorage.removeItem("idsave");
 }
