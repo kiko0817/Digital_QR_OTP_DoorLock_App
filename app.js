@@ -256,78 +256,74 @@ createBtn.addEventListener("click", function(){
     var googleQRUrl = "https://chart.googleapis.com/chart?chs=177x177&cht=qr&chl=";
 
     // show QR code image at the img tag area
-	qrcode.setAttribute('src', googleQRUrl + idOtp +"/" + otp +'&choe=UTF-8');
+	qrcode.setAttribute('src', googleQRUrl + idOtp +"," + otp +'&choe=UTF-8');
 	
-	connectWebSocket();	// connect;
-	sendWebSocket(otp); // send otp;
+	console.log(otp+","+my_id.value.toString()+","+1234);
+	connectSendWebSocket(otp+","+my_id.value.toString()+","+1234);
 });
 
 
 // Web socket
+//protocol should be ws, not http
+//creating web socket with url parameter => connecting
 
-// protocol should be ws, not http
-// creating web socket with url parameter => connecting
+function connectSendWebSocket(msg){
+	//var webSocketUrl = "ws://117.17.158.192:8200/Servlet/broadsocket";
+	var webSocketUrl = "ws://echo.websocket.org";
+	var webSocket = new WebSocket(webSocketUrl);
 
-var webSocket;
-function connectWebSocket(){
-	var webSocketUrl = "ws://117.17.158.192:8200/Servlet/broadsocket"; // for testing
-	webSocket	 = new WebSocket(webSocketUrl);
-	
 	webSocket.onopen = function(evt)
 	{
 	  console.log('connection open, readyState: ' + evt.target.readyState);
+	  sendMessage(msg);
 	};
 
 	webSocket.onerror = function(evt)
 	{
 	  console.log('error, readyState: ' + evt.target.readyState);
 	};
+
+	function sendMessage(msg)
+	{
+	  console.log("ready: "+webSocket.readyState);
+	  if (webSocket.readyState === 1)
+	  {
+		webSocket.send(msg);
+		console.log("msg: "+msg);
+	  }
+	}
+	// To receive message, register message event. It receives message after message event happens
+	webSocket.onmessage = function(evt)
+	{
+	   // from server: key, id, unique#
+	  console.log('server message: ' + evt.data);
+	  var kiu = ''; 	// key, id, unique
+	  kiu = evt.data.toString().split(",");
+	  console.log("kiu: "+kiu);
+	  check(kiu);
+	};
+
+	//close connection
+	function closeConnection()
+	{
+	  if (webSocket.readyState === 1)
+	  {
+	    webSocket.close();
+	  }
+	}
+	
+	// notify connection close if close event happens.
+	webSocket.onclose = function(evt)
+	{
+	  console.log('connection close, readyState: ' + evt.target.readyState);
+	};
 }
 
-// after creating qr code, send key, id, unique# to server
-function sendWebSocket(otp){
-//	sendMessage("0, 0, 1234");
-	sendMessage(otp+","+my_id.value.toString()+","+1234);
-}
 
-function sendMessage(msg)
-{
-  if (webSocket.readyState === 1)
-  {
-	webSocket.send(msg);
-  }
-}
-
-
-// To receive message, register message event. It receives message after message event happens
-webSocket.onmessage = function(evt)
-{
-   // from server: key, id, unique#
-  console.log('server message: ' + evt.data);
-  var kiu = ''; 	// key, id, unique
-  kiu = evt.data.toString().split(",");
-  console.log("kiu: "+kiu);
-  check(kiu);
-};
-
-//close connection
-function closeConnection()
-{
-  if (webSocket.readyState === 1)
-  {
-    webSocket.close();
-  }
-}
-
-// notify connection close if close event happens.
-webSocket.onclose = function(evt)
-{
-  console.log('connection close, readyState: ' + evt.target.readyState);
-};
 
 //door log check
-var log = document.getElementById("log");
-log.addEventListener("click", function(){
+var log_check = document.getElementById("log_check");
+log_check.addEventListener("click", function(){
 	console.log("log click");
 	post("http://117.17.158.192:8200/Servlet/Log", {"type":"log", "id": my_id.value.toString()});
 	
@@ -347,6 +343,8 @@ log.addEventListener("click", function(){
 		}
 	};
 });
+
+
 
 //check door key 
 function check(kiu){
@@ -369,8 +367,9 @@ function setLocalStorage(){
 	console.log("flag: "+flag);
 	if(flag){
 		localStorage.setItem("idsave", 'hello');
+
 	}else{
-		deleteLocalStorage();
+		localStorage.removeItem("idsave");
 	}
 }
 
@@ -382,6 +381,4 @@ if(iddata === null){
 	my_id.setAttribute("value", iddata);
 }
 
-function deleteLocalStorage(){
-	localStorage.removeItem("idsave");
-}
+
