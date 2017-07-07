@@ -21,7 +21,11 @@ body {
 }
 
 #qrcode{
-	margin-top: 10%;
+	margin-top: 5%;
+}
+
+#createBtn{
+	margin-top:0%;
 }
 
 .contents {

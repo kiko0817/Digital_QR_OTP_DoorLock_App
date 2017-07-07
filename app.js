@@ -29,6 +29,8 @@ var id;
 var password;
 var pw_check;
 
+var response_signup;
+
 next1.addEventListener("click", function(){
 	id = document.getElementById('new_id').value;
 	location.href = "index.html#signUp2";
@@ -43,14 +45,24 @@ signup.addEventListener("click", function(){
 	console.log(id.toString());
 	console.log(password.toString());
 	
-	var result = post("http://117.17.158.192:8200/Servlet/servers", {"type":"sign up", "id": id.toString(), "pw": password.toString()});
+	post("http://117.17.158.192:8200/Servlet/servers", {"type":"sign up", "id": id.toString(), "pw": password.toString()});
 	
-	if(result.toString() === "success"){
-		alert("Sign up success");
-		display();
-	}else{
-		document.addjoin.id.focus();
-	}
+	xhr.onreadystatechange = function(e){
+		console.log(xhr.status);
+		if(xhr.readyState == 4 && xhr.status == 200 ){
+			response_signup = xhr.responseText;
+			console.log("internal: "+response_signup);
+			console.log("check response: "+response_signup);
+			
+			if(response_signup.toString() === "success"){
+				alert("Sign up success");
+				display();
+			}else{
+				document.addjoin.id.focus();
+			}
+		}
+	};
+
 });
 
 
@@ -66,34 +78,48 @@ function validate_pw(password, pw_check){
 var my_id = document.getElementById("my_id");
 var my_pw = document.getElementById("my_password");
 
+var response_signin;
 var signin = document.querySelector("#signin");
 signin.addEventListener("click", function(){
 	var myidvalue = my_id.value;
 	var mypwvalue = my_pw.value;
+	validateID(myidvalue, mypwvalue);
 	
 	console.log("my_id: "+myidvalue);
 	console.log("my_pw: "+mypwvalue);
 	
-	var result = post("http://117.17.158.192:8200/Servlet/servers", {"type":"sign in", "id": myidvalue.toString(), "pw": mypwvalue.toString()});
-	console.log("check response: "+result);
+	post("http://117.17.158.192:8200/Servlet/servers", {"type":"sign in", "id": myidvalue.toString(), "pw": mypwvalue.toString()});
 	
-	// validation
-	if(myidvalue === ""){
+	xhr.onreadystatechange = function(e){
+		console.log(xhr.status);
+		if(xhr.readyState == 4 && xhr.status == 200 ){
+			response_signin = xhr.responseText;
+			console.log("internal: "+response_signin);
+			console.log("check response: "+response_signin);
+			
+			if(response_signin.toString() === "can't search id"){
+				alert("This id doesn't exist");
+				document.addjoin.my_id.focus();
+			}else if(response_signin.toString() === "success"){
+				alert("Sign in success");
+				setLocalStorage();
+				displayQR();
+			}
+		}
+	};
+
+});
+
+function validateID(myidvalue, mypwvalue){
+	if(myidvalue == ""){
 		alert("Enter your id");
 		document.addjoin.my_id.focus();
 	}
-	if(mypwvalue === ""){
+	if(mypwvalue == ""){
 		alert("Enter your password");
 		document.addjoin.my_pw.focus();
 	}
-	if(result.toString() === "can't search id"){
-		alert("This id doesn't exist");
-		document.addjoin.my_id.focus();
-	}else if(result.toString() === "success"){
-		alert("Sign in success");
-		displayQR();
-	}
-});
+}
 
 var back = document.getElementById("back");
 back.addEventListener("click", function(){
@@ -122,28 +148,7 @@ function post(url, data){
     } else {
         xhr.send();
     }
-
-//	xhr.onreadystatechange = processRequest;
-//	function processRequest(e){
-//		console.log(xhr.status);
-//		if(xhr.readyState == 4 && xhr.status == 200 ){
-//			response = xhr.responseText;
-//			console.log(response);
-//		}
-//	}
-//	return response;
 }
-
-// receives data after readyState change happens
-xhr.onreadystatechange = function(e){
-	console.log(xhr.status);
-	if(xhr.readyState == 4 && xhr.status == 200 ){
-		response = xhr.responseText;
-		console.log(response);
-	}
-	return response;
-};
-
 
 //create qr code
 var createBtn = document.getElementById("createBtn");
@@ -162,6 +167,7 @@ createBtn.addEventListener("click", function(){
 	var pwAsc = '';
 	var pwTemp = '';
 	var pwSixteen = '';
+	var idOtp = '';
 	var pwOtp = '';
 	var day = new Date();
 	var month = day.getMonth()+1;
@@ -179,7 +185,8 @@ createBtn.addEventListener("click", function(){
 	var fulldate = month + date + hour + min + sec;
 
 	fulldate = parseInt(fulldate, 10);
-
+	
+	idOtp = my_id.value.toString();
 	pwOtp = my_pw.value.toString();
 //	pwOtp = 'd';
 	console.log("pwOtp:"+pwOtp);
@@ -236,7 +243,7 @@ createBtn.addEventListener("click", function(){
 	console.log("otp string: "+otp);
 	otp = parseInt(otp); // opt ready
 	console.log("otp-int: "+otp);
-
+	idOtp = encodeURIComponent(idOtp);
     otp = encodeURIComponent(otp);
     
     console.log("otp-final: "+otp);
@@ -244,9 +251,7 @@ createBtn.addEventListener("click", function(){
     var googleQRUrl = "https://chart.googleapis.com/chart?chs=177x177&cht=qr&chl=";
 
     // show QR code image at the img tag area
-	qrcode.setAttribute('src', googleQRUrl + otp +'&choe=UTF-8');
-	
-//	my_pw.value='';
+	qrcode.setAttribute('src', googleQRUrl + idOtp +"/" + otp +'&choe=UTF-8');
 });
 
 
@@ -254,7 +259,7 @@ createBtn.addEventListener("click", function(){
 
 // protocol should be ws, not http
 // creating web socket with url parameter => connecting
-var webSocketUrl = "ws://echo.websocket.org"; // for testing
+var webSocketUrl = "ws://117.17.158.192:8200/Servlet/broadsocket"; // for testing
 var webSocket	 = new WebSocket(webSocketUrl);
 
 
@@ -270,7 +275,7 @@ webSocket.onerror = function(evt)
 
 var sendtest = document.getElementById("sendtest");
 sendtest.addEventListener("click", function(){
-	sendMessage("web socket message sending test");
+	sendMessage("0, 0, 1234");
 });
 
 function sendMessage(msg)
