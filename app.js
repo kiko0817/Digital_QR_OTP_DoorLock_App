@@ -62,7 +62,6 @@ signup.addEventListener("click", function(){
 			}
 		}
 	};
-
 });
 
 
@@ -150,13 +149,19 @@ function post(url, data){
     }
 }
 
+xhr.onreadystatechange = function(e){
+	if(xhr.readyState == 4 && xhr.status == 200 ){
+		var temp = xhr.reponseText;
+	}
+}
+
 //create qr code
 var createBtn = document.getElementById("createBtn");
 var qrcode = document.getElementById("qrcode");
 
+var otp = '';
 createBtn.addEventListener("click", function(){
 	// variables refresh
-	var otp = '';
 	var midOtp = '';
 	var otp1 = '';
 	var otp2 = '';
@@ -252,6 +257,9 @@ createBtn.addEventListener("click", function(){
 
     // show QR code image at the img tag area
 	qrcode.setAttribute('src', googleQRUrl + idOtp +"/" + otp +'&choe=UTF-8');
+	
+	connectWebSocket();	// connect;
+	sendWebSocket(otp); // send otp;
 });
 
 
@@ -259,24 +267,28 @@ createBtn.addEventListener("click", function(){
 
 // protocol should be ws, not http
 // creating web socket with url parameter => connecting
-var webSocketUrl = "ws://117.17.158.192:8200/Servlet/broadsocket"; // for testing
-var webSocket	 = new WebSocket(webSocketUrl);
 
+var webSocket;
+function connectWebSocket(){
+	var webSocketUrl = "ws://117.17.158.192:8200/Servlet/broadsocket"; // for testing
+	webSocket	 = new WebSocket(webSocketUrl);
+	
+	webSocket.onopen = function(evt)
+	{
+	  console.log('connection open, readyState: ' + evt.target.readyState);
+	};
 
-webSocket.onopen = function(evt)
-{
-  console.log('connection open, readyState: ' + evt.target.readyState);
-};
+	webSocket.onerror = function(evt)
+	{
+	  console.log('error, readyState: ' + evt.target.readyState);
+	};
+}
 
-webSocket.onerror = function(evt)
-{
-  console.log('error, readyState: ' + evt.target.readyState);
-};
-
-var sendtest = document.getElementById("sendtest");
-sendtest.addEventListener("click", function(){
-	sendMessage("0, 0, 1234");
-});
+// after creating qr code, send key, id, unique# to server
+function sendWebSocket(otp){
+//	sendMessage("0, 0, 1234");
+	sendMessage(otp+","+my_id.value.toString()+","+1234);
+}
 
 function sendMessage(msg)
 {
@@ -286,12 +298,17 @@ function sendMessage(msg)
   }
 }
 
+
 // To receive message, register message event. It receives message after message event happens
 webSocket.onmessage = function(evt)
 {
+   // from server: key, id, unique#
   console.log('server message: ' + evt.data);
+  var kiu = ''; 	// key, id, unique
+  kiu = evt.data.toString().split(",");
+  console.log("kiu: "+kiu);
+  check(kiu);
 };
-
 
 //close connection
 function closeConnection()
@@ -307,6 +324,41 @@ webSocket.onclose = function(evt)
 {
   console.log('connection close, readyState: ' + evt.target.readyState);
 };
+
+//door log check
+var log = document.getElementById("log");
+log.addEventListener("click", function(){
+	console.log("log click");
+	post("http://117.17.158.192:8200/Servlet/Log", {"type":"log", "id": my_id.value.toString()});
+	
+	xhr.onreadystatechange = function(e){
+		var logresponse = xhr.responseText;
+		
+		var logtext = document.getElementById("logtext");
+		var logsplit = logresponse.split(',');
+		console.log("logsplit: "+logsplit);
+
+		var length = logsplit.length;
+		var temp = '';
+		for(var i=0; i<length; i++){
+			temp += (i+1)+": "+logsplit[i]+"<br/>";
+			console.log(temp);
+			logtext.innerHTML = temp;
+		}
+	};
+});
+
+//check door key 
+function check(kiu){
+	var key, id, unique;
+	key = kiu[0];
+	id = kiu[1];
+	unique = kiu[2];
+	
+	if(key == otp && my_id == id && unique == 1234){
+		sendWebSocket("client_ok"+","+my_id+","+1234);
+	}
+}
 
 
 // set local storage
