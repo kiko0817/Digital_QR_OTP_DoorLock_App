@@ -102,7 +102,7 @@ signin.addEventListener("click", function(){
 			}else if(response_signin.toString() === "success"){
 				alert("Sign in success");
 				setLocalStorage();
-				sendMessage("init,"+my_id.value.toString()+",1234");
+				sendMessage("init,"+my_id.value.toString()+",0");
 				displayQR();
 			}
 		}
@@ -259,8 +259,8 @@ createBtn.addEventListener("click", function(){
     // show QR code image at the img tag area
 	qrcode.setAttribute('src', googleQRUrl + idOtp +"," + otp +'&choe=UTF-8');
 	
-	console.log(otp+","+my_id.value.toString()+",1234");
-	sendMessage(otp+","+my_id.value.toString()+",1234");
+	console.log(otp+","+my_id.value.toString()+",0");
+//	sendMessage(otp+","+my_id.value.toString()+",0");
 });
 
 
@@ -286,21 +286,26 @@ function sendMessage(msg)
 {
   if (webSocket.readyState === 1)
   {
+	console.log("send check: "+msg);
 	webSocket.send(msg);
   }
 }
 // To receive message, register message event. It receives message after message event happens
 webSocket.onmessage = function(evt)
 {
-  // from server: key, id, unique#
+
   console.log('server message: ' + evt.data);
-  var openalarm = evt.data;
-  displayAlarm(openalarm);
   
-  var kiu = ''; 	// key, id, unique
-  kiu = evt.data.toString().split(",");
-  console.log("kiu: "+kiu);
-  check(kiu);
+   // from server: key, id, unique#  
+  if(evt.data.toString() == "open the door"){
+	  displayAlarm(evt.data);
+  }else if(evt.data.toString() == my_id.value.toString()+"DB REGISTER"){
+	  console.log("check evt.data: "+evt.data.toString());
+  }else{
+	  var kiu = evt.data.toString().split(","); // key, id, unique#
+	  console.log("kiu: "+kiu);
+	  check(kiu);
+  }
 };
 
 //close connection
@@ -322,13 +327,28 @@ webSocket.onclose = function(evt)
 
 //check door key 
 function check(kiu){
+	console.log("check(kiu)");
 	var key, id, unique;
-	key = kiu[0];
-	id = kiu[1];
+	id = kiu[0];
+	key = kiu[1];
 	unique = kiu[2];
+	console.log("key: "+key+", id: "+id+", unique: "+unique);
+	console.log("otp: "+otp);
+	console.log("my_id: "+my_id.value.toString());
 	
-	if(key == otp && my_id == id && unique == 1234){
-		sendMessage("client_ok"+","+my_id.value.toString()+",1234");
+	
+	if(id == my_id.value.toString()){
+		console.log("id");
+		if(unique == "0"){
+			console.log("unique");
+			if( key == otp){
+				console.log("key");
+				console.log("client_ok,"+my_id.value.toString()+",0");
+				sendMessage("client_ok,"+my_id.value.toString()+",0");
+			}else{
+				sendMessage("client_fail,"+my_id.value.toString()+",0");
+			}
+		}
 	}
 }
 
