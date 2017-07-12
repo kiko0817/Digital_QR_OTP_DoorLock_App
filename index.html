@@ -9,11 +9,8 @@
 	<!-- load theme file for your application -->
 	<link rel="stylesheet" href="css/style.css">
 
-
-     
 </head>
 <body>
-
 
 	<div class="ui-page ui-page-active" id="main">
 		<header class="ui-header" >
@@ -52,13 +49,7 @@
 		</div>
 	</div>
 	
-	<div class="ui-page" id="success">
-		<header class="ui-header">
-		</header>
-		<div class="ui-content content-padding">
-			<span id="text">Sign Up Success...</span>
-		</div>
-	</div>
+
 	
 	<div class="ui-page" id="signIn">
 		<header class="ui-header">
@@ -74,13 +65,6 @@
 		</div>
 	</div>
 	
-	<div class="ui-page" id="siginsuccess">
-		<header class="ui-header">
-		</header>
-		<div class="ui-content content-padding">
-			<span id="text">Sign In Success...</span>
-		</div>
-	</div>
 	
 	<div class="ui-page" id="QRarea">
 		<header class="ui-header">
@@ -89,20 +73,13 @@
 		<div class="ui-content content-padding">
 		    <div id="createBtn" class="button">create</div>
 		    <div><img id="qrcode" src='' /></div>
-			<div class="button"><a href="#main">Main</a></div>
+			<div id="main" class="button"><a href="#main">Main</a></div>
 			<div id="log_check" class="button"><a href="logpage">Log check</a></div>
 			<div id="recreatetext">If you want to recreate your qr code<br/>
 									then press the create button again</div>
 		</div>
 	</div>
 	
-	<div class="ui-page" id="alarm">
-		<header class="ui-header">
-		</header>
-		<div class="ui-content content-padding">
-			<span id="text">Your door is opened.</span>
-		</div>
-	</div>
 	
 	<div class="ui-page" id="logpage">
 		<header class="ui-header">
@@ -116,6 +93,11 @@
 	
 	<script type="text/javascript" src="jquery-3.2.1.js"></script>	
 	<script type="text/javascript" src="lib/tau/wearable/js/tau.min.js"></script>
+	
+	<script src="aes.js"></script>
+	<script src="AesUtil.js"></script>
+	<script src="pbkdf2.js"></script>
+	
 	<script src="app.js"></script>
 	<!--<script src="separate.js"></script>-->
 	<script src="lowBatteryCheck.js"></script>
