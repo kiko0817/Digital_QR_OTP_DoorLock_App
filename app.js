@@ -72,14 +72,6 @@ function validate_pw(password, pw_check){
 	}
 }
 
-// actor는 client 공격자 server 
-// client_ok 에서 보낼때 암호화 
-// challenge response: 로그인 -> 서버->chan(서버)->response(클라이언트)(ex: 2+2 = ?를 암호화)
-// client 에서 정답을 보냄 
-// client에서 복호화  authentification
-// 시간값을 이용(값이 계속 바껴서 공격자가 공격할 수 없음)
-// date 함수
-
 // Sign in
 var my_id = document.getElementById("my_id");
 var my_pw = document.getElementById("my_password");
@@ -137,8 +129,8 @@ signin.addEventListener("click", function(){
 				var secretlist = decryptsecret.split(",");
 				console.log("secretlist: "+secretlist);
 				var op1 = secretlist[0];
-				var oper = secretlist[1];
-				var op2 = secretlist[2];
+				var date = new Date();
+				var op2 = date.getSeconds();
 				
 				console.log("op1: "+op1+", op2: "+op2);
 				op1int = Number(op1);
@@ -345,7 +337,7 @@ webSocket.onmessage = function(evt)
   if(evt.data.toString() == "open the door"){
 	  displayAlarm(evt.data);
   }else if(evt.data.toString() == my_id.value.toString()+"DB REGISTER"){
-	  console.log("check evt.data: "+evt.data.toString());
+	  console.log("ignored signal"); 
   }else if(evt.data.toString() == "failed"){
 	  displayAlarm("fail to open the door");
   }else{
